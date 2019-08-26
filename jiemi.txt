@@ -1,0 +1,78 @@
+https://www.cnblogs.com/kevingrace/category/924446.html
+
+ yum provides gzexe   查找软件包gzexe
+
+
+1.gzip加密文件、脚本 
+软件包:    gzip-1.5-10.el7.x86_64  
+	gzexe  a.sh  			//加密    
+	gzexe -b a.sh			//解密
+
+
+2.tar加密
+	tar -zcf - a.sh | openssl des3 -salt -k 123 |dd of=a.sh.des3
+	rm -rf a.sh
+	dd if=a.sh.des3 | openssl des3 -d -k 123 | tar zxf -
+
+3.shc加密
+   安装shc
+	cd /usr/local/src/
+	wget http://www.datsi.fi.upm.es/~frosal/sources/shc-3.8.9.tgz
+	tar -zvxf shc-3.8.9.tgz
+	cd shc-3.8.9
+	mkdir -p /usr/local/man/man1
+	make install
+	(回答yes)
+
+   加密
+	shc -r -f text.sh
+	text.sh  text.sh.x  text.sh.x.c
+	script-name.x.c是生成script-name.x的原文件(c语言)
+	script-name.x是加密后的可执行的二进制文件.
+
+   解密
+	git clone https://github.com/yanncam/UnSHc.git
+	cd UnSHc/latest/
+	mv /root/a.sh.x  .
+	./unshc.sh  a.sh.x 
+
+
+4.结合Tar和OpenSSL给文件和目录加密及解密
+	echo 123 > a.txt
+	echo 465 > b.txt
+	echo 798 > c.txt
+	mv a.txt b.txt c.txt   pzk/
+	cd pzk/
+加密:
+	tar -czf - * | openssl enc -e -aes256 -out aaa.tar.gz
+	mv a.txt  b.txt  c.txt /root/
+解密:
+	openssl enc -d -aes256 -in aaa.tar.gz  | tar xz -C /mnt/
+	
+
+5.对文件夹加密(文件夹里必须有内容)
+	mkdir dirtest
+	echo this is test of dir!!!  >  dirtest/haha.txt
+加密	zip -re dirtest.zip dirtest
+	rm -rf dirtest
+解密	unzip dirtest.zip
+
+
+
+
+6.使用GnuPG加密
+加密	gpg -c haha.txt 
+	rm -rf haha.txt
+解密	gpg haha.txt.gpg
+
+
+
+
+
+
+
+
+
+
+
+
